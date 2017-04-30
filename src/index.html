@@ -8,8 +8,36 @@
     <script>
       console.log(Module);
     </script>
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+      table, td {
+        border: 1px solid black;
+      }
+      td {
+        text-align: center;
+        vertical-align: middle;
+        width: 16px;
+        height: 16px;
+      }
+    </style>
   </head>
   <body>
+    <div class="createfield">
+      <div>
+        height: <input type="number" name="height" min="1" value="5">
+      </div>
+      <div>
+        width: <input type="number" name="width" min="1" value="5">
+      </div>
+      <div>
+        Mine Count: <input type="number" name="minecount" min="1" value="18">
+      </div>
+      <button type="button" name="button">Create Mine Field</button>
+    </div>
+    <table class="minefield">
 
+    </table>
   </body>
 </html>
