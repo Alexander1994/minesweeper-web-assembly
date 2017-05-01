@@ -5,21 +5,25 @@ using namespace std;
 
 Mine::Mine() {
   revealed = false;
-  surroundingMineCount = 0;
+  mineCount = 0;
 }
 bool Mine::isRevealed() {
   return revealed;
 }
-int Mine::getSurroundingMineCount() {
-  return surroundingMineCount;
+int Mine::getMineCount() {
+  return mineCount;
 }
 
-void Mine::setSurroundingMineCount(int srm) {
-  surroundingMineCount = srm;
+void Mine::setMineInField() {
+  mineCount = 9;
+}
+
+void Mine::incMineCount() {
+  mineCount++;
 }
 
 string Mine::toString() {
-  string srm = to_string(surroundingMineCount);
+  string mc = to_string(mineCount);
   string r = to_string(revealed);
-  return srm + r;
+  return mc + r;
 }

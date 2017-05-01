@@ -5,12 +5,13 @@ using namespace std;
 class Mine {
 private:
   bool revealed;
-  int surroundingMineCount;
+  int mineCount; // 9 mine count = mine is present
 public:
   Mine ();
   bool isRevealed();
-  int getSurroundingMineCount();
-  void setSurroundingMineCount(int srm);
+  int getMineCount();
+  void setMineInField();
+  void incMineCount();
   string toString();
 };
 #endif

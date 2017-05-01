@@ -8,6 +8,7 @@ class Minefield {
 private:
   int height, width, mineCount;
   Mine **minefield;
+  void incSurroundingMineCount(int x, int y);
 public:
   Minefield (int h, int w, int mc);
   ~Minefield();

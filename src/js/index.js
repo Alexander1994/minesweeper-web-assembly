@@ -20,17 +20,17 @@ Module.onRuntimeInitialized = ()=> {
 
 const createBoard = (height, width, minecount, board) => {
   let mineArray = splitBoardStr(board);
-  console.log(mineArray);
   let docfragment = document.createDocumentFragment();
   for (let h = 0; h < height; h++) {
     let row = document.createElement("tr");
     for (let w = 0; w < width; w++) {
       let cell = document.createElement("td");
       let mine = mineArray[w+h*width];
-      console.log(mine);
       if (mine[1] === "1") {
         console.log("mine is revealed");
       }
+      let text = document.createTextNode(mine[0]);
+      cell.appendChild(text);
       row.appendChild(cell);
     }
     docfragment.appendChild(row);
