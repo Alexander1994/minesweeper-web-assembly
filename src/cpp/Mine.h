@@ -9,9 +9,11 @@ private:
 public:
   Mine ();
   bool isRevealed();
-  int getMineCount();
+  bool noMineCount();
+  bool isMineInField();
   void setMineInField();
   void incMineCount();
+  void reveal();
   string toString();
 };
 #endif

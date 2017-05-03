@@ -21,6 +21,12 @@
         width: 16px;
         height: 16px;
       }
+      td[data-revealed^="1"] {
+        background: grey;
+      }
+      .hit {
+        background: red;
+      }
     </style>
   </head>
   <body>
@@ -32,7 +38,7 @@
         width: <input type="number" name="width" min="1" value="5">
       </div>
       <div>
-        Mine Count: <input type="number" name="minecount" min="1" value="12">
+        Mine Count: <input type="number" name="minecount" min="1" value="1">
       </div>
       <button type="button" name="button">Create Mine Field</button>
     </div>

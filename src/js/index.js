@@ -6,31 +6,78 @@ Module.onRuntimeInitialized = ()=> {
 
   const createFieldSection = document.querySelector('.createfield');
   const createFieldBtn = document.querySelector(".createfield > button");
+  let width, height, minecount, board;
   createFieldBtn.addEventListener("click", ()=> {
     let inputs = document.querySelectorAll(".createfield input");
-    let height = inputs[0].value;
-    let width = inputs[1].value;
-    let minecount = inputs[2].value;
+    height = inputs[0].value;
+    width = inputs[1].value;
+    minecount = inputs[2].value;
     createMineField(height, width, minecount);
     createFieldSection.style.display = "none";
-    let board = viewBoard();
+    board = viewBoard();
+    console.log(board);
     createBoard(height, width, minecount, board);
+  });
+  let gameOver = false;
+  let table = document.querySelector('table');
+  table.addEventListener("click", function() {
+    let minefield = event.target;
+    let revealed = minefield.getAttribute("data-revealed");
+    if (revealed === "0" && !gameOver) {
+      let x = minefield.getAttribute("data-x");
+      let y = minefield.getAttribute("data-y");
+      if (revealLocation(x,y)) { // mine hit
+        alert("Mine hit!");
+        GameOver = true;
+        let mineHitText = document.createTextNode("X");
+        minefield.appendChild(mineHitText);
+        minefield.classList.add("hit");
+      }
+      board = viewBoard();
+      let mineArray = splitBoardStr(board, width);
+      displayBoard(width, mineArray);
+      let hiddenFields = Array.from(document.querySelectorAll('td[data-revealed^="0"]'));
+      let win = hiddenFields.every((field)=> {
+        let x = parseInt(field.getAttribute("data-x"));
+        let y = parseInt(field.getAttribute("data-y"));
+        let mine = mineArray[x][y];
+        return mine[0] === "9";
+      });
+      if (win)  {
+        alert("You win");
+        gameOver = true;
+      }
+    }
   });
 };
 
+const displayBoard = (width, mineArray) => {
+  let rows = Array.from(document.querySelectorAll("tr"));
+  rows.forEach((row, h)=> {
+    Array.from(row.children).forEach((cell, w)=> {
+      let mine = mineArray[w][h];
+      if (mine[1] === "1" && cell.getAttribute("data-revealed") !== "1") {
+        if (mine[0] !== "0") {
+          let mineCount = document.createTextNode(mine[0]);
+          cell.appendChild(mineCount);
+        }
+        cell.setAttribute("data-revealed", "1");
+      }
+    });
+  });
+}
+
 const createBoard = (height, width, minecount, board) => {
-  let mineArray = splitBoardStr(board);
+  let mineArray = splitBoardStr(board, width);
   let docfragment = document.createDocumentFragment();
   for (let h = 0; h < height; h++) {
     let row = document.createElement("tr");
     for (let w = 0; w < width; w++) {
       let cell = document.createElement("td");
-      let mine = mineArray[w+h*width];
-      if (mine[1] === "1") {
-        console.log("mine is revealed");
-      }
-      let text = document.createTextNode(mine[0]);
-      cell.appendChild(text);
+      let mine = mineArray[h][w];
+      cell.setAttribute("data-x", w);
+      cell.setAttribute("data-y", h);
+      cell.setAttribute("data-revealed", mine[1]);
       row.appendChild(cell);
     }
     docfragment.appendChild(row);
@@ -39,13 +86,14 @@ const createBoard = (height, width, minecount, board) => {
   table.appendChild(docfragment);
 }
 
-const splitBoardStr = (board)=>{
-  let mineArray = [];
+const splitBoardStr = (board, width)=>{
+  let mineArray = [], mineGrid = [];
   let currBoard = board;
   do {
     let mine = currBoard.substr(0,2);
     currBoard = currBoard.substr(2);
     mineArray.push(mine);
   } while (currBoard !== "");
-  return mineArray;
+  while(mineArray.length) mineGrid.push(mineArray.splice(0, width)); // convert to 2d array
+  return mineGrid;
 }

@@ -7,11 +7,21 @@ Mine::Mine() {
   revealed = false;
   mineCount = 0;
 }
+
+void Mine::reveal() {
+  revealed = true;
+}
+
 bool Mine::isRevealed() {
   return revealed;
 }
-int Mine::getMineCount() {
-  return mineCount;
+
+bool Mine::isMineInField() {
+  return mineCount == 9;
+}
+
+bool Mine::noMineCount() {
+  return mineCount == 0;
 }
 
 void Mine::setMineInField() {
