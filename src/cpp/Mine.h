@@ -2,6 +2,7 @@
 #define MINE_H
 #include <string>
 using namespace std;
+
 class Mine {
 private:
   bool revealed;

@@ -1,8 +1,6 @@
 #ifndef MINEFIELD_H
 #define MINEFIELD_H
 #include "Mine.h"
-#include <string>
-using namespace std;
 
 class Minefield {
 private:
