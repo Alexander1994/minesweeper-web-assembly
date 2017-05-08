@@ -71,7 +71,6 @@ int Minefield::revealLocation(int x, int y) { // 1 == mine hit, otherwise 0
 void Minefield::incSurroundingMineCount(int x, int y) {
   int* mineRange = getSurroundingMineRange(x, y);
   int startX = mineRange[2], endX = mineRange[3], startY = mineRange[0], endY = mineRange[1];
-  delete [] mineRange;
 
   for (int i = startX; i <= endX; i++) {
     for (int j = startY; j <= endY; j++) {
@@ -80,25 +79,41 @@ void Minefield::incSurroundingMineCount(int x, int y) {
       }
     }
   }
+  delete [] mineRange;
+
 }
 
 void Minefield::addMines(int clickX, int clickY) {
   int* mineRange = getSurroundingMineRange(clickX, clickY);
   int startX = mineRange[0], endX = mineRange[1], startY = mineRange[2], endY = mineRange[3];
-  delete [] mineRange;
 
   srand(time(NULL));
-  int x, y, i = 0;
-  while (i < mineCount) {
-    x = rand() % width;
-    y = rand() % height;
-    if (!minefield[y][x].isMineInField() &&
-        ( y < startY || y > endY ||
-          x < startX || x > endX ) ){
-      minefield[y][x].setMineInField();
-      incSurroundingMineCount(x,y);
-      i++;
+
+  map<char,int> coord;
+  vector<map<char,int> >::const_iterator first, last;
+  vector<map<char,int> > allMines;
+  for (size_t y = 0; y < height; y++) {
+    for (size_t x = 0; x < width; x++) {
+      if ( y < startY || y > endY || x < startX || x > endX ){
+        coord['x'] = x;
+        coord['y'] = y;
+        allMines.push_back(coord);
+      }
     }
+  }
+  random_shuffle(allMines.begin(), allMines.end());
+  int subArrayStart, randomMinesLength = allMines.size() - mineCount;
+  subArrayStart = (randomMinesLength) ? rand() % randomMinesLength : 0;
+  printf("start: %i\n", subArrayStart);
+  first = allMines.begin() + subArrayStart;
+  last = allMines.begin() + subArrayStart + mineCount;
+  vector<map<char,int> > randomMines(first, last);
+
+  int randomMinesCount = randomMines.size();
+  for (size_t i = 0; i < randomMinesCount; i++) {
+    coord = randomMines[i];
+    minefield[coord['y']][coord['x']].setMineInField();
+    incSurroundingMineCount(coord['x'],coord['y']);
   }
 }
 
