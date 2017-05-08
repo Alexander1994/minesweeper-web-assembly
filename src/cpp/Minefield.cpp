@@ -40,6 +40,7 @@ int Minefield::revealLocation(int x, int y) { // 1 == mine hit, otherwise 0
       startY = (currY - 1 < 0) ? currY : currY-1;
       endX = (currX + 1 >= width) ? currX : currX+1;
       endY = (currY + 1 >= height) ? currY : currY+1;
+
       for (int i = startX; i <= endX; i++) {
         for (int j = startY; j <= endY; j++) {
           coordToPush = to_string(i) + " " + to_string(j);
@@ -59,10 +60,9 @@ int Minefield::revealLocation(int x, int y) { // 1 == mine hit, otherwise 0
 }
 
 void Minefield::incSurroundingMineCount(int x, int y) {
-  int startX = (x - 1 < 0) ? x : x-1;
-  int startY = (y - 1 < 0) ? y : y-1;
-  int endX = (x + 1 > width) ? x : x+1;
-  int endY = (y + 1 > height) ? y : y+1;
+  int* mineRange = getSurroundingMineRange(x, y);
+  int startX = mineRange[2], endX = mineRange[3], startY = mineRange[0], endY = mineRange[1];
+  delete [] mineRange;
 
   for (int i = startX; i <= endX; i++) {
     for (int j = startY; j <= endY; j++) {
@@ -73,19 +73,36 @@ void Minefield::incSurroundingMineCount(int x, int y) {
   }
 }
 
-void Minefield::addMines() {
+void Minefield::addMines(int clickX, int clickY) {
+  int* mineRange = getSurroundingMineRange(clickX, clickY);
+  int startX = mineRange[0], endX = mineRange[1], startY = mineRange[2], endY = mineRange[3];
+  delete [] mineRange;
   srand(time(NULL));
   int x, y, i = 0;
   while (i < mineCount) {
     x = rand() % width;
     y = rand() % height;
-    if (!minefield[y][x].isMineInField()) {
+    if (!minefield[y][x].isMineInField() &&
+        ( y < startY || y > endY ||
+          x < startX || x > endX ) ){
+      printf("mine: %i, %i\n", x, y);
       minefield[y][x].setMineInField();
       incSurroundingMineCount(x,y);
       i++;
     }
   }
 }
+
+int* Minefield::getSurroundingMineRange(int x, int y) {
+  printf("click: %i, %i\n",x, y);
+  int* mineRange = new int[4];
+  mineRange[0] = (y - 1 < 0) ? y : y-1;        // startX
+  mineRange[1] = (y + 1 > height-1) ? y : y+1; // endX
+  mineRange[2] = (x - 1 < 0) ? x : x-1;        // startY
+  mineRange[3] = (x + 1 > width-1) ? x : x+1;  // endY
+  return mineRange;
+}
+
 const char* Minefield::toString() {
   string minefieldstring = "";
   for (size_t i = 0; i < height; i++) {

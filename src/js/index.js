@@ -3,29 +3,38 @@ Module.onRuntimeInitialized = ()=> {
   const createMineField = Module.cwrap('createMineField','undefined', ['number', 'number', 'number']);
   const revealLocation = Module.cwrap('revealLocation','number', ['number', 'number']);
   const viewBoard = Module.cwrap('viewBoard','string', null);
+  const addMines = Module.cwrap('addMines', 'number', ['number', 'number']);
 
   const createFieldSection = document.querySelector('.createfield');
   const createFieldBtn = document.querySelector(".createfield > button");
   let width, height, minecount, board;
   createFieldBtn.addEventListener("click", ()=> {
     let inputs = document.querySelectorAll(".createfield input");
-    height = inputs[0].value;
-    width = inputs[1].value;
-    minecount = inputs[2].value;
-    createMineField(height, width, minecount);
-    createFieldSection.style.display = "none";
-    board = viewBoard();
-    console.log(board);
-    createBoard(height, width, minecount, board);
+    height = parseInt(inputs[0].value);
+    width = parseInt(inputs[1].value);
+    minecount = parseInt(inputs[2].value);
+    if (height * width - 9 >= minecount) {
+      createMineField(height, width, minecount);
+      createFieldSection.style.display = "none";
+      board = viewBoard();
+      createBoard(height, width, board);
+    } else {
+      alert("more mines then field can hold");
+    }
+
   });
-  let gameOver = false;
+  let gameOver = false, gameStarted = false;
   let table = document.querySelector('table');
   table.addEventListener("click", function() {
     let minefield = event.target;
+    let x = parseInt(minefield.getAttribute("data-x"));
+    let y = parseInt(minefield.getAttribute("data-y"));
+    if (!gameStarted) {
+      addMines(x, y);
+      gameStarted = true;
+    }
     let revealed = minefield.getAttribute("data-revealed");
     if (revealed === "0" && !gameOver) {
-      let x = minefield.getAttribute("data-x");
-      let y = minefield.getAttribute("data-y");
       if (revealLocation(x,y)) { // mine hit
         alert("Mine hit!");
         GameOver = true;
@@ -50,7 +59,6 @@ Module.onRuntimeInitialized = ()=> {
     }
   });
 };
-
 const displayBoard = (width, mineArray) => {
   let rows = Array.from(document.querySelectorAll("tr"));
   rows.forEach((row, h)=> {
@@ -67,7 +75,7 @@ const displayBoard = (width, mineArray) => {
   });
 }
 
-const createBoard = (height, width, minecount, board) => {
+const createBoard = (height, width, board) => {
   let mineArray = splitBoardStr(board, width);
   let docfragment = document.createDocumentFragment();
   for (let h = 0; h < height; h++) {

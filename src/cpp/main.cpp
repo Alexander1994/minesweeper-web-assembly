@@ -14,7 +14,9 @@ extern "C" {
   }
   void EMSCRIPTEN_KEEPALIVE createMineField(int height, int width, int minecount) {
     minefield = new Minefield(height, width, minecount);
-    minefield->addMines();
+  }
+  void EMSCRIPTEN_KEEPALIVE addMines(int x, int y) { // coordinates for first click
+    minefield->addMines(x, y);
   }
   void EMSCRIPTEN_KEEPALIVE clearMemory() {
     delete minefield;
