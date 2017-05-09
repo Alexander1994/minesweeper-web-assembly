@@ -6,6 +6,7 @@
 #include <vector>
 #include <algorithm>
 #include <map>
+#include <stdexcept>
 
 using namespace std;
 
@@ -18,6 +19,9 @@ bool map_compare (Map const &lhs, Map const &rhs) {
 
 Minefield::Minefield(int h, int w, int mc) {
   mineCount = mc, height = h, width = w;
+  if (mineCount > height * width - 9) {
+    throw invalid_argument("more mines then field can hold");
+  }
   minefield = new Mine*[height];
   for (int i = 0; i < height; i++) {
     minefield[i] = new Mine[width];
@@ -104,7 +108,6 @@ void Minefield::addMines(int clickX, int clickY) {
   random_shuffle(allMines.begin(), allMines.end());
   int subArrayStart, randomMinesLength = allMines.size() - mineCount;
   subArrayStart = (randomMinesLength) ? rand() % randomMinesLength : 0;
-  printf("start: %i\n", subArrayStart);
   first = allMines.begin() + subArrayStart;
   last = allMines.begin() + subArrayStart + mineCount;
   vector<map<char,int> > randomMines(first, last);

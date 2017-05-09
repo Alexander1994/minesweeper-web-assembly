@@ -13,7 +13,11 @@ extern "C" {
     return minefield->revealLocation(x,y);
   }
   void EMSCRIPTEN_KEEPALIVE createMineField(int height, int width, int minecount) {
-    minefield = new Minefield(height, width, minecount);
+    try {
+      minefield = new Minefield(height, width, minecount);
+    } catch (string s) {
+      printf("%s\n", s.c_str());
+    }
   }
   void EMSCRIPTEN_KEEPALIVE addMines(int x, int y) { // coordinates for first click
     minefield->addMines(x, y);
