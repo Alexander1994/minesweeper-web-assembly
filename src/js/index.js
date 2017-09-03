@@ -13,15 +13,16 @@ Module.onRuntimeInitialized = ()=> {
     height = parseInt(inputs[0].value);
     width = parseInt(inputs[1].value);
     minecount = parseInt(inputs[2].value);
-    if (height * width - 9 >= minecount) {
+    if (height < 4 || width < 4) {
+      alert("minefield too small");
+    } else if (height * width - 9 < minecount) {
+      alert("more mines then field can hold");
+    } else {
       createMineField(height, width, minecount);
       createFieldSection.style.display = "none";
       board = viewBoard();
       createBoard(height, width, board);
-    } else {
-      alert("more mines then field can hold");
     }
-
   });
   let gameOver = false, gameStarted = false;
   let table = document.querySelector('table');

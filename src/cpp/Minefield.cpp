@@ -75,6 +75,7 @@ int Minefield::revealLocation(int x, int y) { // 1 == mine hit, otherwise 0
 void Minefield::incSurroundingMineCount(int x, int y) {
   int* mineRange = getSurroundingMineRange(x, y);
   int startX = mineRange[2], endX = mineRange[3], startY = mineRange[0], endY = mineRange[1];
+  delete [] mineRange;
 
   for (int i = startX; i <= endX; i++) {
     for (int j = startY; j <= endY; j++) {
@@ -83,14 +84,13 @@ void Minefield::incSurroundingMineCount(int x, int y) {
       }
     }
   }
-  delete [] mineRange;
 
 }
 
 void Minefield::addMines(int clickX, int clickY) {
   int* mineRange = getSurroundingMineRange(clickX, clickY);
   int startX = mineRange[0], endX = mineRange[1], startY = mineRange[2], endY = mineRange[3];
-
+  delete [] mineRange;
   srand(time(NULL));
 
   map<char,int> coord;
@@ -106,8 +106,8 @@ void Minefield::addMines(int clickX, int clickY) {
     }
   }
   random_shuffle(allMines.begin(), allMines.end());
-  int subArrayStart, randomMinesLength = allMines.size() - mineCount;
-  subArrayStart = (randomMinesLength) ? rand() % randomMinesLength : 0;
+  int randomMinesLength = allMines.size() - mineCount;
+  int subArrayStart = (randomMinesLength) ? rand() % randomMinesLength : 0;
   first = allMines.begin() + subArrayStart;
   last = allMines.begin() + subArrayStart + mineCount;
   vector<map<char,int> > randomMines(first, last);
