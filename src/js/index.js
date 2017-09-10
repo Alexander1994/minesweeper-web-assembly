@@ -3,6 +3,9 @@ var Module = {};
 const reset = document.getElementById('reset');
 reset.addEventListener('click', ()=> location.reload());
 
+Module.onAbort = () => {
+  alert("it seems wasm doesn't work on your computer");
+};
 Module.onRuntimeInitialized = ()=> {
   const createMineField = Module.cwrap('createMineField','undefined', ['number', 'number', 'number']);
   const revealLocation = Module.cwrap('revealLocation','number', ['number', 'number']);
