@@ -22,8 +22,11 @@ extern "C" {
   void EMSCRIPTEN_KEEPALIVE addMines(int x, int y) { // coordinates for first click
     minefield->addMines(x, y);
   }
-  void EMSCRIPTEN_KEEPALIVE clearMemory() {
+  void EMSCRIPTEN_KEEPALIVE destroy() {
     delete minefield;
+  }
+  void EMSCRIPTEN_KEEPALIVE revealAllMines() {
+    minefield->revealAllMines();
   }
   const char* EMSCRIPTEN_KEEPALIVE viewBoard() {
     return minefield->toString();

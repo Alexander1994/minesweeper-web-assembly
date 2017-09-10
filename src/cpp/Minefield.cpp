@@ -9,10 +9,7 @@
 #include <stdexcept>
 
 using namespace std;
-/*
- for () for ()
-mf[x][y]
-*/
+
 template <typename Map>
 bool map_compare (Map const &lhs, Map const &rhs) {
     return lhs.size() == rhs.size() &&
@@ -133,6 +130,14 @@ vector<Mine> Minefield::getRevealedMines() {
     }
   }
   return revealedMines;
+}
+
+void Minefield::revealAllMines() {
+  for (size_t i = 0; i < width; i++) {
+    for (size_t j = 0; j < height; j++) {
+      minefield[i][j].reveal();
+    }
+  }
 }
 
 const char* Minefield::toString() {

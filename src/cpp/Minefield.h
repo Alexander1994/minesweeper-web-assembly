@@ -15,6 +15,7 @@ public:
   Minefield (int h, int w, int mc);
   ~Minefield();
   int revealLocation(int x, int y);
+  void revealAllMines();
   void addMines(int clickX, int clickY);
   std::vector<Mine> getRevealedMines();
   const char *toString();
