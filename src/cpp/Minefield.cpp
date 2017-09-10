@@ -9,8 +9,10 @@
 #include <stdexcept>
 
 using namespace std;
-
-
+/*
+ for () for ()
+mf[x][y]
+*/
 template <typename Map>
 bool map_compare (Map const &lhs, Map const &rhs) {
     return lhs.size() == rhs.size() &&
@@ -27,11 +29,12 @@ Minefield::Minefield(int h, int w, int mc) {
     minefield[i] = new Mine[width];
   }
 }
+
 Minefield::~Minefield() {
   for (int i = 0; i < height; i++) {
-    delete minefield[i];
+    delete[] minefield[i];
   }
-  delete minefield;
+  delete[] minefield;
 }
 
 int Minefield::revealLocation(int x, int y) { // 1 == mine hit, otherwise 0
@@ -39,7 +42,7 @@ int Minefield::revealLocation(int x, int y) { // 1 == mine hit, otherwise 0
     return 1;
   } else if (minefield[x][y].noMineCount()) { // no mine count in field
 
-    int startX, startY, endX, endY, currX, currY, coordDivider, it;
+    int currX, currY, coordDivider, it;
     vector<map<char,int> > emptyCoordSet;
     map<char,int> firstClick, coordToPush;
     firstClick['x'] = x;
@@ -48,13 +51,10 @@ int Minefield::revealLocation(int x, int y) { // 1 == mine hit, otherwise 0
     for (it = 0; it < emptyCoordSet.size(); it++) {
       currX = emptyCoordSet[it]['x'];
       currY = emptyCoordSet[it]['y'];
-      startX = (currX - 1 < 0) ? currX : currX-1;
-      startY = (currY - 1 < 0) ? currY : currY-1;
-      endX = (currX + 1 >= width) ? currX : currX+1;
-      endY = (currY + 1 >= height) ? currY : currY+1;
+      map<string, int> mineRange = getSurroundingMineRange(currX, currY);
 
-      for (int i = startX; i <= endX; i++) {
-        for (int j = startY; j <= endY; j++) {
+      for (int i = mineRange["startX"]; i <= mineRange["endX"]; i++) {
+        for (int j = mineRange["startY"]; j <= mineRange["endY"]; j++) {
           coordToPush['x'] = i;
           coordToPush['y'] = j;
           if (minefield[i][j].noMineCount() && find(emptyCoordSet.begin(), emptyCoordSet.end(), coordToPush) == emptyCoordSet.end()) {
@@ -73,14 +73,11 @@ int Minefield::revealLocation(int x, int y) { // 1 == mine hit, otherwise 0
 }
 
 void Minefield::incSurroundingMineCount(int x, int y) {
-  int* mineRange = getSurroundingMineRange(x, y);
-  int startX = mineRange[2], endX = mineRange[3], startY = mineRange[0], endY = mineRange[1];
-  delete [] mineRange;
-
-  for (int i = startX; i <= endX; i++) {
-    for (int j = startY; j <= endY; j++) {
-      if (!minefield[j][i].isMineInField()) {
-        minefield[j][i].incMineCount();
+  map<string, int> mineRange = getSurroundingMineRange(x, y);
+  for (int i = mineRange["startX"]; i <= mineRange["endX"]; i++) {
+    for (int j = mineRange["startY"]; j <= mineRange["endY"]; j++) {
+      if (!minefield[i][j].isMineInField()) {
+        minefield[i][j].incMineCount();
       }
     }
   }
@@ -88,9 +85,7 @@ void Minefield::incSurroundingMineCount(int x, int y) {
 }
 
 void Minefield::addMines(int clickX, int clickY) {
-  int* mineRange = getSurroundingMineRange(clickX, clickY);
-  int startX = mineRange[0], endX = mineRange[1], startY = mineRange[2], endY = mineRange[3];
-  delete [] mineRange;
+  map<string, int> mineRange = getSurroundingMineRange(clickX, clickY);
   srand(time(NULL));
 
   map<char,int> coord;
@@ -98,7 +93,7 @@ void Minefield::addMines(int clickX, int clickY) {
   vector<map<char,int> > allMines;
   for (size_t y = 0; y < height; y++) {
     for (size_t x = 0; x < width; x++) {
-      if ( y < startY || y > endY || x < startX || x > endX ){
+      if (y < mineRange["startY"] || y > mineRange["endY"] || x < mineRange["startX"] || x > mineRange["endX"]) {
         coord['x'] = x;
         coord['y'] = y;
         allMines.push_back(coord);
@@ -115,24 +110,36 @@ void Minefield::addMines(int clickX, int clickY) {
   int randomMinesCount = randomMines.size();
   for (size_t i = 0; i < randomMinesCount; i++) {
     coord = randomMines[i];
-    minefield[coord['y']][coord['x']].setMineInField();
+    minefield[coord['x']][coord['y']].setMineInField();
     incSurroundingMineCount(coord['x'],coord['y']);
   }
 }
 
-int* Minefield::getSurroundingMineRange(int x, int y) {
-  int* mineRange = new int[4];
-  mineRange[0] = (y - 1 < 0) ? y : y-1;        // startX
-  mineRange[1] = (y + 1 > height-1) ? y : y+1; // endX
-  mineRange[2] = (x - 1 < 0) ? x : x-1;        // startY
-  mineRange[3] = (x + 1 > width-1) ? x : x+1;  // endY
+map<string, int> Minefield::getSurroundingMineRange(int x, int y) {
+  map<string, int> mineRange;
+  mineRange["startX"] = (x == 0) ? x : x-1;
+  mineRange["endX"] = (x == width-1) ? x : x+1;
+  mineRange["startY"] = (y == 0) ? y : y-1;
+  mineRange["endY"] = (y == height-1) ? y : y+1;
   return mineRange;
+}
+
+vector<Mine> Minefield::getRevealedMines() {
+  vector<Mine> revealedMines;
+  for (size_t i = 0; i < width; i++) {
+    for (size_t j = 0; j < height; j++) {
+      if (minefield[i][j].isRevealed())
+        revealedMines.push_back(minefield[i][j]);
+    }
+  }
+  return revealedMines;
 }
 
 const char* Minefield::toString() {
   string minefieldstring = "";
-  for (size_t i = 0; i < height; i++) {
-    for (size_t j = 0; j < width; j++) {
+  string tmp = "";
+  for (size_t i = 0; i < width; i++) {
+    for (size_t j = 0; j < height; j++) {
       minefieldstring += minefield[i][j].toString();
     }
   }

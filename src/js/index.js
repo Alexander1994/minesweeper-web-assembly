@@ -60,6 +60,7 @@ Module.onRuntimeInitialized = ()=> {
     }
   });
 };
+
 const displayBoard = (width, mineArray) => {
   let rows = Array.from(document.querySelectorAll("tr"));
   rows.forEach((row, h)=> {
@@ -70,6 +71,7 @@ const displayBoard = (width, mineArray) => {
           let mineCount = document.createTextNode(mine[0]);
           cell.appendChild(mineCount);
         }
+
         cell.setAttribute("data-revealed", "1");
       }
     });
@@ -83,7 +85,7 @@ const createBoard = (height, width, board) => {
     let row = document.createElement("tr");
     for (let w = 0; w < width; w++) {
       let cell = document.createElement("td");
-      let mine = mineArray[h][w];
+      let mine = mineArray[w][h];
       cell.setAttribute("data-x", w);
       cell.setAttribute("data-y", h);
       cell.setAttribute("data-revealed", mine[1]);
