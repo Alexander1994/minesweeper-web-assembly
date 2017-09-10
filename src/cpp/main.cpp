@@ -25,6 +25,9 @@ extern "C" {
   void EMSCRIPTEN_KEEPALIVE clearMemory() {
     delete minefield;
   }
+  void EMSCRIPTEN_KEEPALIVE revealAllMines() {
+    minefield->revealAllMines();
+  }
   const char* EMSCRIPTEN_KEEPALIVE viewBoard() {
     return minefield->toString();
   }

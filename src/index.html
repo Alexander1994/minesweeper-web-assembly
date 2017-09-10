@@ -3,11 +3,6 @@
   <head>
     <meta charset="utf-8">
     <title>Minesweeper in WebAssembly</title>
-    <script src="index.js"></script>
-    <script src="main.js"></script>
-    <script>
-      console.log(Module);
-    </script>
     <style>
       table {
         border-collapse: collapse;
@@ -37,6 +32,9 @@
       .hit {
         background: red;
       }
+      #reset {
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -53,5 +51,11 @@
       <button type="button" name="button">Create Mine Field</button>
     </div>
     <table class="minefield"></table>
+    <button id="reset" type="button" name="button">Reset Game</button>
+    <script src="index.js"></script>
+    <script src="main.js"></script>
+    <script>
+      console.log(Module);
+    </script>
   </body>
 </html>
