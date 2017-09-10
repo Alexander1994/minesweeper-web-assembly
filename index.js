@@ -1,9 +1,17 @@
 var Module = {};
+
+const reset = document.getElementById('reset');
+reset.addEventListener('click', ()=> location.reload());
+
+Module.onAbort = () => {
+  alert("it seems wasm doesn't work on your computer");
+};
 Module.onRuntimeInitialized = ()=> {
   const createMineField = Module.cwrap('createMineField','undefined', ['number', 'number', 'number']);
   const revealLocation = Module.cwrap('revealLocation','number', ['number', 'number']);
   const viewBoard = Module.cwrap('viewBoard','string', null);
   const addMines = Module.cwrap('addMines', 'number', ['number', 'number']);
+  const revealAllMines = Module.cwrap('revealAllMines', 'undefined', null);
 
   const createFieldSection = document.querySelector('.createfield');
   const createFieldBtn = document.querySelector(".createfield > button");
@@ -22,6 +30,7 @@ Module.onRuntimeInitialized = ()=> {
       createFieldSection.style.display = "none";
       board = viewBoard();
       createBoard(height, width, board);
+      reset.style.display = "block";
     }
   });
   let gameOver = false, gameStarted = false;

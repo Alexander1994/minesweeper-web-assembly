@@ -2625,12 +2625,6 @@ assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it a
 return real__viewBoard.apply(null, arguments);
 };
 
-var real__clearMemory = asm["_clearMemory"]; asm["_clearMemory"] = function() {
-assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
-assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-return real__clearMemory.apply(null, arguments);
-};
-
 var real_stackAlloc = asm["stackAlloc"]; asm["stackAlloc"] = function() {
 assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
 assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
@@ -2655,10 +2649,16 @@ assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it a
 return real__pthread_mutex_unlock.apply(null, arguments);
 };
 
-var real_stackRestore = asm["stackRestore"]; asm["stackRestore"] = function() {
+var real__emscripten_get_global_libc = asm["_emscripten_get_global_libc"]; asm["_emscripten_get_global_libc"] = function() {
 assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
 assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-return real_stackRestore.apply(null, arguments);
+return real__emscripten_get_global_libc.apply(null, arguments);
+};
+
+var real__revealAllMines = asm["_revealAllMines"]; asm["_revealAllMines"] = function() {
+assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+return real__revealAllMines.apply(null, arguments);
 };
 
 var real____errno_location = asm["___errno_location"]; asm["___errno_location"] = function() {
@@ -2685,10 +2685,10 @@ assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it a
 return real_establishStackSpace.apply(null, arguments);
 };
 
-var real__emscripten_get_global_libc = asm["_emscripten_get_global_libc"]; asm["_emscripten_get_global_libc"] = function() {
+var real_stackRestore = asm["stackRestore"]; asm["stackRestore"] = function() {
 assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
 assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-return real__emscripten_get_global_libc.apply(null, arguments);
+return real_stackRestore.apply(null, arguments);
 };
 
 var real__malloc = asm["_malloc"]; asm["_malloc"] = function() {
@@ -2701,6 +2701,12 @@ var real__pthread_mutex_lock = asm["_pthread_mutex_lock"]; asm["_pthread_mutex_l
 assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
 assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
 return real__pthread_mutex_lock.apply(null, arguments);
+};
+
+var real__destroy = asm["_destroy"]; asm["_destroy"] = function() {
+assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
+assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
+return real__destroy.apply(null, arguments);
 };
 Module["asm"] = asm;
 var _llvm_bswap_i32 = Module["_llvm_bswap_i32"] = function() { return Module["asm"]["_llvm_bswap_i32"].apply(null, arguments) };
@@ -2715,20 +2721,21 @@ var _sbrk = Module["_sbrk"] = function() { return Module["asm"]["_sbrk"].apply(n
 var _memcpy = Module["_memcpy"] = function() { return Module["asm"]["_memcpy"].apply(null, arguments) };
 var stackSave = Module["stackSave"] = function() { return Module["asm"]["stackSave"].apply(null, arguments) };
 var _viewBoard = Module["_viewBoard"] = function() { return Module["asm"]["_viewBoard"].apply(null, arguments) };
-var _clearMemory = Module["_clearMemory"] = function() { return Module["asm"]["_clearMemory"].apply(null, arguments) };
 var stackAlloc = Module["stackAlloc"] = function() { return Module["asm"]["stackAlloc"].apply(null, arguments) };
 var getTempRet0 = Module["getTempRet0"] = function() { return Module["asm"]["getTempRet0"].apply(null, arguments) };
 var setTempRet0 = Module["setTempRet0"] = function() { return Module["asm"]["setTempRet0"].apply(null, arguments) };
 var _pthread_mutex_unlock = Module["_pthread_mutex_unlock"] = function() { return Module["asm"]["_pthread_mutex_unlock"].apply(null, arguments) };
-var stackRestore = Module["stackRestore"] = function() { return Module["asm"]["stackRestore"].apply(null, arguments) };
+var _emscripten_get_global_libc = Module["_emscripten_get_global_libc"] = function() { return Module["asm"]["_emscripten_get_global_libc"].apply(null, arguments) };
+var _revealAllMines = Module["_revealAllMines"] = function() { return Module["asm"]["_revealAllMines"].apply(null, arguments) };
 var ___errno_location = Module["___errno_location"] = function() { return Module["asm"]["___errno_location"].apply(null, arguments) };
 var ___cxa_can_catch = Module["___cxa_can_catch"] = function() { return Module["asm"]["___cxa_can_catch"].apply(null, arguments) };
 var _free = Module["_free"] = function() { return Module["asm"]["_free"].apply(null, arguments) };
 var runPostSets = Module["runPostSets"] = function() { return Module["asm"]["runPostSets"].apply(null, arguments) };
 var establishStackSpace = Module["establishStackSpace"] = function() { return Module["asm"]["establishStackSpace"].apply(null, arguments) };
-var _emscripten_get_global_libc = Module["_emscripten_get_global_libc"] = function() { return Module["asm"]["_emscripten_get_global_libc"].apply(null, arguments) };
+var stackRestore = Module["stackRestore"] = function() { return Module["asm"]["stackRestore"].apply(null, arguments) };
 var _malloc = Module["_malloc"] = function() { return Module["asm"]["_malloc"].apply(null, arguments) };
 var _pthread_mutex_lock = Module["_pthread_mutex_lock"] = function() { return Module["asm"]["_pthread_mutex_lock"].apply(null, arguments) };
+var _destroy = Module["_destroy"] = function() { return Module["asm"]["_destroy"].apply(null, arguments) };
 var dynCall_iiii = Module["dynCall_iiii"] = function() { return Module["asm"]["dynCall_iiii"].apply(null, arguments) };
 var dynCall_viiiii = Module["dynCall_viiiii"] = function() { return Module["asm"]["dynCall_viiiii"].apply(null, arguments) };
 var dynCall_i = Module["dynCall_i"] = function() { return Module["asm"]["dynCall_i"].apply(null, arguments) };
