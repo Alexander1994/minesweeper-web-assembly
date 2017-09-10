@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
-emcc src/cpp/*.cpp -s WASM=1 -o dist/main.js
-cp src/js/*.js dist
-cp src/*.html dist
+loc="dist"
+if [[ "$1" == "web" ]]; then
+  loc="."
+fi
+emcc src/cpp/*.cpp -s WASM=1 -o $loc/main.js
+cp src/js/*.js $loc
+cp src/*.html $loc
