@@ -45,28 +45,46 @@ Module.onRuntimeInitialized = ()=> {
     }
     let revealed = minefield.getAttribute("data-revealed");
     if (revealed === "0" && !gameOver) {
-      if (revealLocation(x,y)) { // mine hit
-        alert("Mine hit!");
-        GameOver = true;
-        let mineHitText = document.createTextNode("X");
-        minefield.appendChild(mineHitText);
-        minefield.classList.add("hit");
-      }
+      let isMineHit = revealLocation(x,y);
       board = viewBoard();
       let mineArray = splitBoardStr(board, width);
       displayBoard(width, mineArray);
-      let hiddenFields = Array.from(document.querySelectorAll('td[data-revealed^="0"]'));
-      let win = hiddenFields.every((field)=> {
-        let x = parseInt(field.getAttribute("data-x"));
-        let y = parseInt(field.getAttribute("data-y"));
-        let mine = mineArray[x][y];
-        return mine[0] === "9";
-      });
-      if (win)  {
-        alert("You win");
+
+      if (isMineHit) { // mine hit
+        alert("Mine hit!");
         gameOver = true;
+        let mineHitText = document.createTextNode("X");
+        minefield.appendChild(mineHitText);
+        minefield.classList.add("hit");
+        revealAllMinesForGameOver(mineArray);
+      } else {
+        let hiddenFields = Array.from(document.querySelectorAll('td[data-revealed^="0"]'));
+        let win = hiddenFields.every((field)=> {
+          let x = parseInt(field.getAttribute("data-x"));
+          let y = parseInt(field.getAttribute("data-y"));
+          let mine = mineArray[x][y];
+          return mine[0] === "9";
+        });
+        if (win)  {
+          alert("You win");
+          revealAllMinesForGameOver(mineArray);
+          gameOver = true;
+        }
       }
     }
+  });
+};
+
+const revealAllMinesForGameOver = (mineArray) => {
+  let hiddenFields = Array.from(document.querySelectorAll('td[data-revealed^="0"]'));
+  hiddenFields.forEach((field) => {
+    field.setAttribute("data-revealed", "1");
+    let x = parseInt(field.getAttribute("data-x"));
+    let y = parseInt(field.getAttribute("data-y"));
+    let mine = mineArray[x][y];
+    let mineHitText = document.createTextNode((mine[0] === "9") ? "X" : mine[0]);
+    field.innerHTML = "";
+    field.appendChild(mineHitText);
   });
 };
 
@@ -80,7 +98,6 @@ const displayBoard = (width, mineArray) => {
           let mineCount = document.createTextNode(mine[0]);
           cell.appendChild(mineCount);
         }
-
         cell.setAttribute("data-revealed", "1");
       }
     });
