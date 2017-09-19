@@ -3,6 +3,9 @@
 The purpose of this is to create a primitve version of minesweeper using web assembly.
 With the long term goal of writing a computer algorithm to solve minesweeper.
 
+url: [http://AlexMcCallum.me/minesweeper-web-assembly](http://AlexMcCallum.me/minesweeper-web-assembly)
+
+
 # Build locally
 
 first install [web assembly](http://webassembly.org/getting-started/developers-guide/)
