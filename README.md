@@ -8,7 +8,7 @@ url: [AlexMcCallum.me/minesweeper-web-assembly](http://AlexMcCallum.me/minesweep
 
 # Build locally
 
-first install [web assembly](http://webassembly.org/getting-started/developers-guide/)
+first install [emsdk](http://webassembly.org/getting-started/developers-guide/) to compile the C++ to WebAssembly
 ```
 cd minesweeper-web-assembly
 mkdir dist
